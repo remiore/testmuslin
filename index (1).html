@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muslin Labs — Filter truth from fiction</title>
+    <meta name="description" content="A verification layer for the internet. Upload media. Get instant AI detection. Stay ahead of deepfakes.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant:wght@300;400;500&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --cream: #FAF7F2;
+            --soft-white: #FFFEFB;
+            --warm-beige: #E8E3D8;
+            --natural-tan: #C9BFA8;
+            --earth-brown: #8B7355;
+            --deep-clay: #5D4E37;
+            --accent-sage: #B4C7B4;
+            --accent-terracotta: #D4A57A;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Crimson Text', serif;
+            background: linear-gradient(135deg, var(--soft-white) 0%, var(--cream) 50%, var(--warm-beige) 100%);
+            color: var(--deep-clay);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Subtle texture overlay */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(0,0,0,0.01) 2px, rgba(0,0,0,0.01) 4px),
+                repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.01) 2px, rgba(0,0,0,0.01) 4px);
+            pointer-events: none;
+            opacity: 0.3;
+            z-index: 1;
+        }
+
+        /* Floating muslin-like elements */
+        .muslin-float {
+            position: fixed;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(180, 199, 180, 0.15), rgba(232, 227, 216, 0.1));
+            filter: blur(60px);
+            pointer-events: none;
+            z-index: 0;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        .muslin-float:nth-child(1) {
+            width: 400px;
+            height: 400px;
+            top: -100px;
+            right: -100px;
+            animation-delay: 0s;
+        }
+
+        .muslin-float:nth-child(2) {
+            width: 300px;
+            height: 300px;
+            bottom: -50px;
+            left: -50px;
+            animation-delay: 7s;
+        }
+
+        .muslin-float:nth-child(3) {
+            width: 250px;
+            height: 250px;
+            top: 40%;
+            left: 60%;
+            animation-delay: 14s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -30px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        header {
+            padding: 3rem 0 2rem;
+            text-align: center;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        .logo {
+            font-family: 'Cormorant', serif;
+            font-size: 2rem;
+            font-weight: 300;
+            letter-spacing: 0.15em;
+            color: var(--earth-brown);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+        }
+
+        .tagline {
+            font-size: 1rem;
+            color: var(--natural-tan);
+            font-style: italic;
+            letter-spacing: 0.05em;
+        }
+
+        main {
+            padding: 4rem 0 6rem;
+            text-align: center;
+        }
+
+        .hero {
+            animation: fadeInUp 1.2s ease-out 0.3s both;
+        }
+
+        h1 {
+            font-family: 'Cormorant', serif;
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 400;
+            line-height: 1.2;
+            color: var(--deep-clay);
+            margin-bottom: 2rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .subheadline {
+            font-size: clamp(1.2rem, 3vw, 1.5rem);
+            line-height: 1.8;
+            color: var(--earth-brown);
+            margin-bottom: 3rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .waitlist {
+            margin: 4rem auto 0;
+            max-width: 500px;
+            animation: fadeInUp 1.4s ease-out 0.6s both;
+        }
+
+        .waitlist-form {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+
+        .email-input {
+            flex: 1;
+            min-width: 250px;
+            padding: 1rem 1.5rem;
+            font-family: 'Crimson Text', serif;
+            font-size: 1rem;
+            border: 2px solid var(--warm-beige);
+            background: rgba(255, 255, 255, 0.7);
+            color: var(--deep-clay);
+            border-radius: 50px;
+            outline: none;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .email-input:focus {
+            border-color: var(--accent-sage);
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 4px 20px rgba(180, 199, 180, 0.2);
+        }
+
+        .email-input::placeholder {
+            color: var(--natural-tan);
+        }
+
+        .submit-btn {
+            padding: 1rem 2.5rem;
+            font-family: 'Crimson Text', serif;
+            font-size: 1rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, var(--accent-sage), var(--accent-terracotta));
+            color: var(--soft-white);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(180, 199, 180, 0.3);
+            letter-spacing: 0.05em;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(180, 199, 180, 0.4);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .form-note {
+            font-size: 0.9rem;
+            color: var(--natural-tan);
+            font-style: italic;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-top: 6rem;
+            animation: fadeInUp 1.6s ease-out 0.9s both;
+        }
+
+        .feature {
+            padding: 2rem 1.5rem;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 20px;
+            border: 1px solid var(--warm-beige);
+            backdrop-filter: blur(10px);
+            transition: all 0.4s ease;
+        }
+
+        .feature:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.7);
+            box-shadow: 0 10px 30px rgba(139, 115, 85, 0.1);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .feature h3 {
+            font-family: 'Cormorant', serif;
+            font-size: 1.3rem;
+            font-weight: 500;
+            color: var(--earth-brown);
+            margin-bottom: 0.75rem;
+        }
+
+        .feature p {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: var(--deep-clay);
+        }
+
+        footer {
+            text-align: center;
+            padding: 3rem 0;
+            font-size: 0.9rem;
+            color: var(--natural-tan);
+            border-top: 1px solid var(--warm-beige);
+            margin-top: 4rem;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .waitlist-form {
+                flex-direction: column;
+            }
+
+            .email-input {
+                min-width: 100%;
+            }
+
+            .submit-btn {
+                width: 100%;
+            }
+
+            .features {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+        }
+
+        /* Success message */
+        .success-message {
+            display: none;
+            padding: 1rem;
+            background: rgba(180, 199, 180, 0.2);
+            border: 2px solid var(--accent-sage);
+            border-radius: 15px;
+            color: var(--earth-brown);
+            font-weight: 600;
+            margin-top: 1rem;
+        }
+
+        .success-message.show {
+            display: block;
+            animation: fadeInUp 0.5s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="muslin-float"></div>
+    <div class="muslin-float"></div>
+    <div class="muslin-float"></div>
+
+    <div class="container">
+        <header>
+            <div class="logo">Muslin Labs</div>
+            <div class="tagline">Filter truth from fiction</div>
+        </header>
+
+        <main>
+            <div class="hero">
+                <h1>A verification layer for the internet.</h1>
+                <p class="subheadline">
+                    Upload media. Get instant AI detection. Stay ahead of deepfakes.
+                </p>
+            </div>
+
+            <div class="waitlist">
+                <form class="waitlist-form" id="waitlistForm">
+                    <input 
+                        type="email" 
+                        class="email-input" 
+                        placeholder="Enter your email" 
+                        required
+                        id="emailInput"
+                    >
+                    <button type="submit" class="submit-btn">Join the Waitlist</button>
+                </form>
+                <p class="form-note">Be the first to know when we launch</p>
+                <div class="success-message" id="successMessage">
+                    ✓ You're on the list! We'll be in touch soon.
+                </div>
+            </div>
+
+            <div class="features">
+                <div class="feature">
+                    <span class="feature-icon">🔍</span>
+                    <h3>Instant Detection</h3>
+                    <p>Upload any image or video and get results in seconds</p>
+                </div>
+                <div class="feature">
+                    <span class="feature-icon">🛡️</span>
+                    <h3>Social Media Ready</h3>
+                    <p>Verify content from Twitter, Instagram, TikTok, and more</p>
+                </div>
+                <div class="feature">
+                    <span class="feature-icon">✨</span>
+                    <h3>Simple & Clear</h3>
+                    <p>No technical knowledge needed. Just upload and verify</p>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>&copy; 2026 Muslin Labs. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Handle form submission
+        document.getElementById('waitlistForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('emailInput').value;
+            const successMessage = document.getElementById('successMessage');
+            
+            // Here you would normally send the email to your backend/email service
+            // For now, we'll just show a success message
+            console.log('Email submitted:', email);
+            
+            // Show success message
+            successMessage.classList.add('show');
+            
+            // Clear the input
+            document.getElementById('emailInput').value = '';
+            
+            // Hide success message after 5 seconds
+            setTimeout(() => {
+                successMessage.classList.remove('show');
+            }, 5000);
+            
+            // TODO: Integrate with email service (Mailchimp, ConvertKit, etc.)
+            // Example:
+            // fetch('/api/subscribe', {
+            //     method: 'POST',
+            //     headers: { 'Content-Type': 'application/json' },
+            //     body: JSON.stringify({ email })
+            // });
+        });
+    </script>
+</body>
+</html>
